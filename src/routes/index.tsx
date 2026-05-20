@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, X, Minus } from "lucide-react";
+import { ArrowRight, Check, X, Minus, Bot } from "lucide-react";
 import { Layout, Section, Eyebrow } from "@/components/site/Layout";
 import { Reveal } from "@/components/site/Reveal";
 import { FEATURES, STATS, BARRIERS, USERS, COMPETITORS } from "@/lib/lex-data";
@@ -28,29 +28,55 @@ function Index() {
       <Users />
       <Compare />
       <CTA />
+      <ChatBotFAB />
     </Layout>
+  );
+}
+
+function ChatBotFAB() {
+  return (
+    <Link
+      to="/chatbot"
+      className="fixed bottom-8 right-8 z-[60] flex items-center flex-row-reverse gap-3 group"
+    >
+      <div className="bg-primary text-primary-foreground p-4 shadow-2xl hover:bg-accent hover:text-accent-foreground transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
+        <Bot size={28} />
+      </div>
+      <div className="hidden md:block bg-background border border-border px-4 py-2 text-[10px] uppercase tracking-widest text-primary shadow-xl font-medium opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
+        Legal Assistant
+      </div>
+    </Link>
   );
 }
 
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="grain absolute inset-0" />
-      <Section className="relative pt-24 pb-28 lg:pt-36 lg:pb-40">
-        <Reveal>
-          <Eyebrow>QuantCraft Hackathon 2026</Eyebrow>
-        </Reveal>
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 pointer-events-none">
+        <img
+          src="/hero.png"
+          alt="Legal background"
+          className="w-full h-full object-cover "
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/10 to-background/60" />
+      </div>
+
+      {/* Grain Texture */}
+      <div className="grain absolute inset-0 opacity-40 pointer-events-none" />
+
+      <Section className="relative z-10 pt-24 pb-28 lg:pt-36 lg:pb-40">
         <div className="mt-8 grid lg:grid-cols-12 gap-10 items-end">
           <div className="lg:col-span-8">
             <Reveal delay={0.05}>
               <h1 className="font-serif text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] text-primary tracking-tight">
                 Legal intelligence
                 <br />
-                for <em className="italic text-accent">every Indian.</em>
+                for every Indian <em className="italic text-accent"></em>
               </h1>
             </Reveal>
             <Reveal delay={0.15}>
-              <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
+              <p className="mt-8 text-lg md:text-xl text-primary max-w-2xl leading-relaxed">
                 Describe your problem in plain Hindi or English. LexAI tells you your rights, generates real documents, and gives you a step-by-step action plan — in under three minutes.
               </p>
             </Reveal>
@@ -75,8 +101,8 @@ function Hero() {
 
           <div className="lg:col-span-4">
             <Reveal delay={0.35}>
-              <div className="border border-border bg-card p-6 relative">
-                <div className="absolute -top-3 left-6 px-3 bg-background text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              <div className="border border-border bg-background/50 backdrop-blur-sm p-6 relative">
+                <div className="absolute -top-3 left-6 px-3 bg-background/80 backdrop-blur-sm border border-border text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   Live example
                 </div>
                 <p className="text-sm text-muted-foreground">User typed</p>

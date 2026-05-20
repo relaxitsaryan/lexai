@@ -7,9 +7,9 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — LexAI" },
-      { name: "description", content: "LexAI is built by a 3-person team for QuantCraft Hackathon 2026 — Product & AI, Engineering, and Legal & GTM." },
+      { name: "description", content: "LexAI is a legal aid platform for every Indian. Know your rights, generate documents, and act — in minutes, in your language." },
       { property: "og:title", content: "About — LexAI" },
-      { property: "og:description", content: "Our mission, our roadmap from hackathon to Series A, and the team behind it." },
+      { property: "og:description", content: "LexAI is a legal aid platform for every Indian. Know your rights, generate documents, and act — in minutes, in your language." },
     ],
   }),
   component: AboutPage,
@@ -81,9 +81,6 @@ function AboutPage() {
             </Reveal>
           ))}
         </div>
-        <Reveal delay={0.3} className="mt-12 text-sm text-muted-foreground">
-          Prepared for QuantCraft 2026 · Galgotias University · Team Nexido × BuilderBase
-        </Reveal>
       </Section>
     </Layout>
   );

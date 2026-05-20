@@ -188,7 +188,7 @@ export const B2B = [
 ];
 
 export const ROADMAP = [
-  { phase: "Phase 0", title: "Hackathon MVP", when: "24 hours", points: ["Situation Analyzer + RAG", "Document generator (3 templates)", "Hindi + English UI", "Live demo at QuantCraft"] },
+  { phase: "Phase 0", title: "Hackathon MVP", when: "24 hours", points: ["Situation Analyzer + RAG", "Document generator (3 templates)", "Hindi + English UI"] },
   { phase: "Phase 1", title: "Public Beta", when: "Months 1–3", points: ["All 8 core features live", "10,000 early users", "Pay-per-document live", "Pro subscription launch"] },
   { phase: "Phase 2", title: "Scale", when: "Months 4–9", points: ["Lawyer marketplace live", "B2B pilots with 10 partners", "Regional languages added", "50,000 users"] },
   { phase: "Phase 3", title: "Series A", when: "Year 2", points: ["100,000+ registered users", "50+ B2B clients", "API for third-party developers", "Series A — ₹5–10 Cr"] },

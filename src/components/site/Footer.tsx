@@ -14,9 +14,6 @@ export function Footer() {
           <p className="mt-4 text-sm text-muted-foreground max-w-xs leading-relaxed">
             Legal intelligence for every Indian. Know your rights, generate documents, and act — in minutes, in your language.
           </p>
-          <p className="mt-6 text-xs text-muted-foreground/70">
-            QuantCraft Hackathon 2026 · Team Nexido × BuilderBase
-          </p>
         </div>
 
         <FooterCol title="Product" links={[
