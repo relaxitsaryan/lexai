@@ -36,14 +36,14 @@ function Index() {
 function ChatBotFAB() {
   return (
     <Link
-      to="/chatbot"
+      to="/analyzer"
       className="fixed bottom-8 right-8 z-[60] flex items-center flex-row-reverse gap-3 group"
     >
       <div className="bg-primary text-primary-foreground p-4 shadow-2xl hover:bg-accent hover:text-accent-foreground transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
         <Bot size={28} />
       </div>
       <div className="hidden md:block bg-background border border-border px-4 py-2 text-[10px] uppercase tracking-widest text-primary shadow-xl font-medium opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
-        Legal Assistant
+        Situation Analyzer
       </div>
     </Link>
   );
