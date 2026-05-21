@@ -84,7 +84,7 @@ function ChatbotPage() {
               <div className="bg-primary p-6 text-primary-foreground">
                 <p className="text-xs uppercase tracking-widest opacity-80 mb-3">Live Status</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-green-400" />
                   <p className="font-serif text-lg">Llama 3.3 70B Active</p>
                 </div>
                 <p className="mt-2 text-[10px] opacity-70">Ultra-low latency inference via Groq</p>

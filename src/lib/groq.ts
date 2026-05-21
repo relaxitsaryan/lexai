@@ -56,7 +56,19 @@ Structure:
   "relevantLaws": [{"law": "name", "explanation": "how it applies"}],
   "suggestedActions": ["action 1", "action 2"],
   "riskLevel": "Low" | "Medium" | "High",
-  "riskExplanation": "why"
+  "riskExplanation": "why",
+  "actionRoadmap": [
+    {
+      "step": number,
+      "title": "exact title, e.g., 'Send Legal Notice'",
+      "authority": "authority name, e.g., 'District Labour Commissioner'",
+      "howTo": "specific method, e.g., 'Online via Samadhan Portal'",
+      "timeline": "duration, e.g., 'Day 1-3'",
+      "deadline": "statutory limit, e.g., 'Within 3 years of non-payment'",
+      "documents": ["doc 1", "doc 2"],
+      "actionType": "draft_notice" | "file_complaint" | "consult_lawyer" | "other"
+    }
+  ]
 }
 `.trim();
 
@@ -141,3 +153,61 @@ export const transcribeAudio = createServerFn({ method: "POST" })
     return response.json();
   });
 
+export const generateLegalDraft = createServerFn({ method: "POST" })
+  .handler(async (ctx: any) => {
+    const { situation, actionType, stepTitle } = ctx.data as { situation: string; actionType: string; stepTitle: string };
+    const prompt = `
+      You are LexAI's Legal Document Engine. 
+      Generate a professional, court-standard legal draft for the following:
+      Action: ${stepTitle} (${actionType})
+      Situation: ${situation}
+      
+      Requirements:
+      - Use professional Indian legal terminology.
+      - Include placeholders for [Name], [Address], [Date] in bold [brackets].
+      - Ensure the tone is firm yet formal.
+      - Return ONLY the draft content in plain text with clear headings.
+      - **CRITICAL**: Do NOT use any markdown symbols like #, *, or _ in the output. Use uppercase for headings instead.
+    `.trim();
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "system", content: "You are an expert Indian Legal Draftsman." }, { role: "user", content: prompt }],
+        temperature: 0.4,
+      }),
+    });
+    return response.json();
+  });
+export const getDetailedExplanation = createServerFn({ method: "POST" })
+  .handler(async (ctx: any) => {
+    const { situation, context } = ctx.data as { situation: string; context: string };
+    const prompt = `
+      You are LexAI's Senior Legal Strategist. 
+      The user wants a DETAILED, deep-dive explanation on "What to do next" for their situation.
+      
+      Situation: ${situation}
+      Context: ${context}
+      
+      Requirements:
+      - Provide a comprehensive breakdown of the legal strategy.
+      - Explain WHY certain actions are recommended.
+      - Discuss potential challenges and how to overcome them.
+      - Mention important evidentiary requirements in detail.
+      - Tone: Authoritative, academic yet helpful.
+      - Use uppercase for headings. DO NOT use markdown symbols like # or *.
+    `.trim();
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${GROQ_API_KEY}` },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "system", content: "You are an expert Indian Legal Consultant." }, { role: "user", content: prompt }],
+        temperature: 0.5,
+      }),
+    });
+    return response.json();
+  });

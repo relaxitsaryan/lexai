@@ -65,7 +65,7 @@ function Hero() {
       {/* Grain Texture */}
       <div className="grain absolute inset-0 opacity-40 pointer-events-none" />
 
-      <Section className="relative z-10 pt-24 pb-28 lg:pt-36 lg:pb-40">
+      <Section className="relative z-10 pt-16 pb-20 lg:pt-24 lg:pb-28">
         <div className="mt-8 grid lg:grid-cols-12 gap-10 items-end">
           <div className="lg:col-span-8">
             <Reveal delay={0.05}>
@@ -89,12 +89,12 @@ function Hero() {
                   Explore the platform
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                 </Link>
-                <Link
+                {/* <Link
                   to="/pricing"
                   className="inline-flex items-center gap-2 border border-primary/30 text-primary px-6 py-3.5 text-sm hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   See pricing
-                </Link>
+                </Link> */}
               </div>
             </Reveal>
           </div>
@@ -145,14 +145,27 @@ function Marquee() {
     "Specific Relief Act",
     "Contract Act",
   ];
+  
+  // Duplicate items for seamless loop
+  const doubleItems = [...items, ...items];
+
   return (
-    <div className="border-y border-border bg-secondary/40 overflow-hidden">
-      <motion.div
-        className="flex gap-12 py-5 whitespace-nowrap text-xs uppercase tracking-[0.22em] text-primary/70"
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+    <div className="border-y border-border bg-secondary/40 overflow-hidden relative">
+      <motion.div 
+        className="flex gap-12 py-5 whitespace-nowrap text-xs uppercase tracking-[0.22em] text-primary/70 w-max"
+        animate={{
+          x: [0, "-50%"],
+        }}
+        transition={{
+          x: {
+            repeat: Infinity,
+            repeatType: "loop",
+            duration: 40,
+            ease: "linear",
+          },
+        }}
       >
-        {[...items, ...items].map((t, i) => (
+        {doubleItems.map((t, i) => (
           <span key={i} className="flex items-center gap-12">
             {t}
             <span className="text-accent">§</span>
@@ -165,7 +178,7 @@ function Marquee() {
 
 function Stats() {
   return (
-    <Section className="py-24">
+    <Section className="py-12">
       <div className="grid md:grid-cols-4 gap-px bg-border border border-border">
         {STATS.map((s, i) => (
           <Reveal key={s.k} delay={i * 0.08} className="bg-background p-8">
@@ -180,7 +193,7 @@ function Stats() {
 
 function Problem() {
   return (
-    <Section className="py-28">
+    <Section className="py-16">
       <div className="grid lg:grid-cols-12 gap-10">
         <div className="lg:col-span-5">
           <Reveal>
@@ -217,7 +230,7 @@ function Problem() {
 
 function FeaturesPreview() {
   return (
-    <Section className="py-28">
+    <Section className="py-16">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
         <Reveal>
           <Eyebrow>02 — The Platform</Eyebrow>
@@ -260,7 +273,7 @@ function FeaturesPreview() {
 
 function Users() {
   return (
-    <Section className="py-28">
+    <Section className="py-16">
       <Reveal>
         <Eyebrow>03 — Who Uses LexAI</Eyebrow>
         <h2 className="mt-6 font-serif text-4xl md:text-5xl text-primary max-w-3xl leading-tight">
@@ -301,7 +314,7 @@ function Compare() {
     );
 
   return (
-    <Section className="py-28">
+    <Section className="py-16">
       <Reveal>
         <Eyebrow>04 — The Landscape</Eyebrow>
         <h2 className="mt-6 font-serif text-4xl md:text-5xl text-primary max-w-3xl leading-tight">
@@ -341,7 +354,7 @@ function Compare() {
 
 function CTA() {
   return (
-    <Section className="py-28">
+    <Section className="py-16">
       <Reveal>
         <div className="bg-primary text-primary-foreground p-12 md:p-20 relative overflow-hidden">
           <div className="grain absolute inset-0 opacity-20" />
@@ -359,9 +372,9 @@ function CTA() {
               <Link to="/contact" className="bg-accent text-accent-foreground px-6 py-3.5 text-sm hover:opacity-90 transition-opacity">
                 Get early access
               </Link>
-              <Link to="/pricing" className="border border-primary-foreground/30 text-primary-foreground px-6 py-3.5 text-sm hover:bg-primary-foreground hover:text-primary transition-colors">
+              {/* <Link to="/pricing" className="border border-primary-foreground/30 text-primary-foreground px-6 py-3.5 text-sm hover:bg-primary-foreground hover:text-primary transition-colors">
                 See pricing
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

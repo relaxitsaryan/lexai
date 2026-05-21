@@ -5,8 +5,8 @@ import { Menu, X } from "lucide-react";
 const links = [
   { to: "/", label: "Home" },
   { to: "/features", label: "Features" },
-  { to: "/analyzer", label: "Situation Analyzer" },
-  { to: "/pricing", label: "Pricing" },
+  { to: "/analyzer", label: "Analysis Engine" },
+  // { to: "/pricing", label: "Pricing" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -23,11 +23,10 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/85 backdrop-blur border-b border-border"
-          : "bg-transparent"
-      }`}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled
+        ? "bg-background/85 backdrop-blur border-b border-border"
+        : "bg-transparent"
+        }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
@@ -71,7 +70,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-background border-t border-border animate-fade-in">
+        <div className="md:hidden bg-background border-t border-border">
           <nav className="flex flex-col px-6 py-4 gap-4">
             {links.map((l) => (
               <Link

@@ -107,7 +107,7 @@ export function ChatInterface() {
           <div>
             <h3 className="font-serif text-base font-semibold text-primary tracking-tight">LexAI Assistant</h3>
             <div className="mt-0.5 flex items-center gap-2">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
               <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
                 Multilingual Legal Aid
               </span>
@@ -157,16 +157,16 @@ export function ChatInterface() {
           </div>
         ))}
         {isLoading && (
-          <div className="flex justify-start animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="flex justify-start">
             <div className="flex gap-4 max-w-[85%]">
               <div className="w-9 h-9 shrink-0 border border-border bg-background flex items-center justify-center rounded-none text-primary shadow-sm">
-                <Loader2 size={14} className="animate-spin" />
+                <Loader2 size={14} />
               </div>
               <div className="p-5 bg-background border border-border border-dashed">
                 <div className="flex gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-primary/30 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 bg-primary/30 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 bg-primary/30 rounded-full animate-bounce" />
+                  <span className="w-1.5 h-1.5 bg-primary/30 rounded-full" />
+                  <span className="w-1.5 h-1.5 bg-primary/30 rounded-full" />
+                  <span className="w-1.5 h-1.5 bg-primary/30 rounded-full" />
                 </div>
               </div>
             </div>
@@ -202,7 +202,7 @@ export function ChatInterface() {
               disabled={isLoading || !input.trim()}
               className="p-4 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all shadow-md active:scale-95"
             >
-              {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+              {isLoading ? <Loader2 size={20} /> : <Send size={20} />}
             </button>
           </div>
         </form>

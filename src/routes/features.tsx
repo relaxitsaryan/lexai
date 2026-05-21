@@ -91,13 +91,13 @@ function FeaturesPage() {
                 Pick a plan that fits — free forever for citizens, or Pro for unlimited use.
               </p>
             </div>
-            <Link
+            {/* <Link
               to="/pricing"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3.5 text-sm hover:bg-primary/90 transition-colors w-fit"
             >
               View pricing
               <ArrowRight size={16} />
-            </Link>
+            </Link> */}
           </div>
         </Reveal>
       </Section>

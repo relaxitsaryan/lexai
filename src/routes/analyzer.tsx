@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
-import { analyzeLegalSituation, getLegalRights } from "@/lib/groq";
-import { Scale, ShieldCheck, Clock, AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Gavel, LayoutDashboard, FileText, Search, Mic2, Settings, Globe, Info, Zap } from "lucide-react";
+import { analyzeLegalSituation, getLegalRights, generateLegalDraft, getDetailedExplanation } from "@/lib/groq";
+import { Scale, ShieldCheck, Clock, AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Gavel, LayoutDashboard, FileText, Search, Mic2, Settings, Globe, Info, Zap, X, Copy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ActionRoadmap } from "@/components/analyzer/ActionRoadmap";
 
 export const Route = createFileRoute("/analyzer")({
   component: AnalyzerPage,
@@ -14,12 +15,84 @@ const SAMPLES = [
     text: "My employer in Bangalore has not paid my salary for the last 2 months. When I ask the HR, they say they have cash flow issues. Now they are threatening to fire me.",
   },
   {
-    label: "Tenant Rights",
-    text: "My landlord told me to vacate within 7 days without notice. I have a valid rental agreement for 8 more months.",
+    label: "Tenant Eviction",
+    text: "My landlord told me to vacate within 7 days without notice. I have a valid rental agreement for 8 more months and have paid all my bills on time.",
   },
   {
     label: "E-commerce Fraud",
-    text: "I bought a phone online for ₹50,000. It arrived broken, and the seller refuses to refund me.",
+    text: "I bought a phone online for ₹50,000. It arrived broken and the box was tampered with. The seller refuses to refund me and says I broke it.",
+  },
+  {
+    label: "UPI Fraud",
+    text: "I received a call from someone claiming to be from my bank. They asked for a KYC update and I shared an OTP. Immediately, ₹20,000 was debited from my account via UPI.",
+  },
+  {
+    label: "Gratuity Claim",
+    text: "I worked for a private firm for 6 years and resigned last month. The company is refusing to pay my gratuity, saying I was an 'at-will' employee.",
+  },
+  {
+    label: "RERA Complaint",
+    text: "I booked a flat in 2021 with a delivery date of Dec 2023. The builder has only completed 40% of the work and is now asking for more money for 'increased raw material costs'.",
+  },
+  {
+    label: "Medical Negligence",
+    text: "My father underwent a minor knee surgery, but due to a doctor's error, he developed a severe infection and now cannot walk. The hospital refuses to share medical records.",
+  },
+  {
+    label: "Insurance Reject",
+    text: "My health insurance claim for a gall bladder surgery was rejected. They claim it was a 'pre-existing disease' even though I've had the policy for 5 years.",
+  },
+  {
+    label: "Mutual Divorce",
+    text: "My spouse and I want to file for a mutual consent divorce. We have been living separately for 14 months and have agreed on all terms including alimony.",
+  },
+  {
+    label: "Illegal Encroachment",
+    text: "My neighbor has started a semi-permanent construction that extends 3 feet into my ancestral land. They are threatening me when I try to stop them.",
+  },
+  {
+    label: "Sexual Harassment",
+    text: "I am facing persistent unwanted advances from my senior manager. I complained to HR, but they are trying to suppress the matter and asking me to 'adjust'.",
+  },
+  {
+    label: "Child Custody",
+    text: "After our separation, my husband is not allowing me to meet our 6-year-old daughter. He is keeping her in a different city without my consent.",
+  },
+  {
+    label: "Defamation",
+    text: "A former business partner is spreading false rumors about me on social media, claiming I embezzled funds. This is damaging my reputation and current business.",
+  },
+  {
+    label: "Maintenance Claim",
+    text: "I am a homemaker with two children. My husband has deserted us and is not providing any financial support. I need to claim maintenance for our survival.",
+  },
+  {
+    label: "PF Withdrawal",
+    text: "I applied for a PF withdrawal for my daughter's wedding 3 months ago. The EPFO portal shows 'under process' and the local office is not responding to calls.",
+  },
+  {
+    label: "Partition Dispute",
+    text: "My brothers are refusing to give me my share of our father's self-acquired property, claiming that because I am a married daughter, I have no rights.",
+  },
+  {
+    label: "Gift Deed Revocation",
+    text: "I gifted my house to my son on the condition that he takes care of me. Now he is mistreating me and trying to throw me out. I want to revoke the gift deed.",
+  },
+  {
+    label: "RTI Delay",
+    text: "I filed an RTI with the Municipal Corporation regarding local road tenders 45 days ago. I haven't received any response despite the 30-day legal limit.",
+  },
+  {
+    label: "IP Theft",
+    text: "I shared my startup's product design with a potential investor. They didn't invest but have now launched a near-identical product under a different name.",
+  },
+  {
+    label: "Cyber Bullying",
+    text: "Someone has created a fake profile using my photos and is sending offensive messages to my friends and family. I have reported to the platform but no action taken.",
+  },
+  {
+    label: "Cheque Bounce",
+    text: "A client gave me a cheque for ₹1.5 Lakhs for services rendered. The cheque has bounced due to 'insufficient funds'. The client is now ghosting me.",
   },
 ];
 
@@ -37,7 +110,11 @@ function AnalyzerPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [expandedLaw, setExpandedLaw] = useState<number | null>(null);
-  const [activeView, setActiveView] = useState<'dashboard' | 'rights'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'rights' | 'roadmap'>('dashboard');
+  const [draftResult, setDraftResult] = useState<string | null>(null);
+  const [isDrafting, setIsDrafting] = useState(false);
+  const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
+  const [isExplaining, setIsExplaining] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,6 +122,14 @@ function AnalyzerPage() {
       resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [result]);
+
+  // Fix blank rights view: If we switch to rights view but the result came from basic analyzer, re-fetch rights data
+  useEffect(() => {
+    const shouldFetchRights = activeView === 'rights' && result && !result.laws && !isLoading;
+    if (shouldFetchRights) {
+      handleAnalyze(true); // pass skipReset/specificView flag
+    }
+  }, [activeView, result, isLoading]);
 
   useEffect(() => {
     if (!isLoading) return;
@@ -54,26 +139,66 @@ function AnalyzerPage() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (specificRightsFetch = false) => {
     if (!situation.trim() || isLoading) return;
     setIsLoading(true);
     setStage(0);
-    setError(null);
-    setResult(null);
+    if (!specificRightsFetch) {
+      setError(null);
+      setResult(null);
+    }
 
     try {
-      const response = activeView === 'dashboard' 
-        ? await analyzeLegalSituation({ data: [{ role: "user", content: situation }] }) as any
-        : await getLegalRights({ data: [{ role: "user", content: situation }] }) as any;
+      const response = (activeView === 'rights' || specificRightsFetch)
+        ? await getLegalRights({ data: [{ role: "user", content: situation }] }) as any
+        : await analyzeLegalSituation({ data: [{ role: "user", content: situation }] }) as any;
       
       const content = response.choices[0].message.content;
       const parsed = JSON.parse(content);
-      setResult(parsed);
+      
+      if (specificRightsFetch) {
+        setResult((prev: any) => ({ ...prev, ...parsed }));
+      } else {
+        setResult(parsed);
+      }
     } catch (e) {
       console.error(e);
       setError("Failed to process situation. Please check your internet or try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleLearnMore = async () => {
+    if (isExplaining || !situation) return;
+    setIsExplaining(true);
+    try {
+      const context = activeView === 'rights' ? "Focus on detailed statutory rights and legal protections." : "Focus on general legal strategy and next steps.";
+      const response = await (getDetailedExplanation as any)({ data: { situation, context } });
+      const explanation = response.choices[0].message.content;
+      setDetailedExplanation(explanation);
+    } catch (e) {
+      console.error(e);
+      setError("Failed to generate detailed explanation.");
+    } finally {
+      setIsExplaining(false);
+    }
+  };
+
+  const handleDraftAction = async (actionType: string, stepTitle: string) => {
+    if (isDrafting) return;
+    setIsDrafting(true);
+    try {
+      const response = await (generateLegalDraft as any)({ 
+        data: { situation, actionType, stepTitle } 
+      });
+      const draft = response.choices[0].message.content;
+      setDraftResult(draft);
+    } catch (e) {
+      console.error(e);
+      setError("Failed to generate draft. Please try again.");
+    } finally {
+      setIsDrafting(false);
     }
   };
 
@@ -100,7 +225,7 @@ function AnalyzerPage() {
           <p className="px-6 text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4 italic">Analysis Engine</p>
           <nav className="space-y-1">
             <button
-              onClick={() => { setActiveView('dashboard'); setResult(null); }}
+              onClick={() => { setActiveView('dashboard'); }}
               className={`w-full flex items-center gap-3 px-6 py-3 text-sm transition-all relative
                 ${activeView === 'dashboard' 
                   ? "bg-[#faf3e0] text-accent font-semibold border-l-2 border-accent" 
@@ -111,7 +236,7 @@ function AnalyzerPage() {
               Situation Dashboard
             </button>
             <button
-              onClick={() => { setActiveView('rights'); setResult(null); }}
+              onClick={() => { setActiveView('rights'); }}
               className={`w-full flex items-center gap-3 px-6 py-3 text-sm transition-all relative
                 ${activeView === 'rights' 
                   ? "bg-[#faf3e0] text-accent font-semibold border-l-2 border-accent" 
@@ -120,6 +245,18 @@ function AnalyzerPage() {
             >
               <ShieldCheck size={16} />
               Know Your Rights
+            </button>
+            <button
+              onClick={() => { setActiveView('roadmap'); }}
+              disabled={!result}
+              className={`w-full flex items-center gap-3 px-6 py-3 text-sm transition-all relative
+                ${activeView === 'roadmap' 
+                  ? "bg-[#faf3e0] text-accent font-semibold border-l-2 border-accent" 
+                  : !result ? "opacity-30 cursor-not-allowed text-muted-foreground" : "text-muted-foreground hover:bg-[#faf3e0]/50 hover:text-primary"}
+              `}
+            >
+              <Clock size={16} />
+              Action Roadmap
             </button>
           </nav>
 
@@ -163,12 +300,14 @@ function AnalyzerPage() {
           </div>
           
           <h1 className="font-serif text-4xl font-bold mb-4">
-            {activeView === 'dashboard' ? 'Situation Analyzer' : 'Know Your Rights Engine'}
+            {activeView === 'dashboard' ? 'Situation Dashboard' : activeView === 'rights' ? 'Know Your Rights Engine' : 'Action Roadmap'}
           </h1>
           <p className="text-[#6b6560] text-lg max-w-2xl mb-12 leading-relaxed font-sans">
             {activeView === 'dashboard' 
               ? 'Get a high-level strategic overview of your case including risk levels, key facts, and immediate steps.'
-              : 'Identify specific Indian Laws, Acts, and Sections that protect you. Plain-language explanations for citizens.'
+              : activeView === 'rights' 
+                ? 'Identify specific Indian Laws, Acts, and Sections that protect you. Plain-language explanations for citizens.'
+                : 'Your personalized, step-by-step legal journey with authorities, deadlines, and required documentation.'
             }
           </p>
 
@@ -199,13 +338,13 @@ function AnalyzerPage() {
 
             <div className="mt-12 pt-8 border-t border-[#e8e0d0] flex items-center justify-between">
               <button
-                onClick={handleAnalyze}
+                onClick={() => handleAnalyze()}
                 disabled={!situation.trim() || isLoading}
                 className={`flex items-center gap-3 px-10 py-5 text-sm font-bold transition-all active:scale-95
                   ${isLoading || !situation.trim() ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-primary text-white hover:bg-primary/95 shadow-lg"}
                 `}
               >
-                {isLoading ? <Scale className="animate-spin text-accent" size={20} /> : <Zap size={20} className="fill-accent text-accent" />}
+                {isLoading ? <Scale className="text-accent" size={20} /> : <Zap size={20} className="fill-accent text-accent" />}
                 {isLoading ? "Consulting Engine..." : "Analyze Legal Premise"}
               </button>
               
@@ -226,7 +365,7 @@ function AnalyzerPage() {
                 className="bg-white border border-accent/20 p-16 text-center shadow-xl"
               >
                 <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <Scale className="text-accent animate-spin" size={32} />
+                  <Scale className="text-accent" size={32} />
                 </div>
                 <h3 className="text-xl font-bold mb-3 font-serif">Synthesizing Legal Logic</h3>
                 <p className="text-accent text-xs font-bold mb-8 uppercase tracking-[0.2em]">{STAGES[stage]}</p>
@@ -244,7 +383,7 @@ function AnalyzerPage() {
 
           {/* Results View - Dashboard */}
           {result && activeView === 'dashboard' && (
-            <div className="lex-result space-y-8 animate-in fade-in duration-1000">
+            <div className="lex-result space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  <div className="p-6 bg-white border border-[#e8e0d0] shadow-sm">
                    <p className="text-[10px] uppercase tracking-widest text-[#6b6560] font-bold mb-2">Legal Domain</p>
@@ -296,19 +435,27 @@ function AnalyzerPage() {
               <div className="p-8 bg-primary text-white/90 font-serif text-lg leading-relaxed shadow-lg border-l-8 border-accent">
                 <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent mb-4 font-sans">Risk Assessment</p>
                 {result.riskExplanation}
-                <button 
-                  onClick={() => setActiveView('rights')}
-                  className="mt-8 flex items-center gap-3 text-xs font-bold text-accent uppercase tracking-widest hover:gap-5 transition-all"
-                >
-                  View Statutory Protections <ArrowRight size={16} />
-                </button>
+                <div className="flex gap-6 mt-8">
+                   <button 
+                     onClick={() => setActiveView('rights')}
+                     className="flex items-center gap-3 text-xs font-bold text-accent uppercase tracking-widest hover:gap-5 transition-all"
+                   >
+                     View Statutory Protections <ArrowRight size={16} />
+                   </button>
+                   <button 
+                     onClick={handleLearnMore}
+                     className="flex items-center gap-3 text-xs font-bold text-white/60 hover:text-white uppercase tracking-widest transition-all"
+                   >
+                     Learn More About Strategy <Info size={16} />
+                   </button>
+                 </div>
               </div>
             </div>
           )}
 
           {/* Results View - Rights Engine */}
           {result && activeView === 'rights' && (
-            <div ref={resultsRef} className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div ref={resultsRef} className="space-y-12">
                {/* Use the rich rights engine UI here */}
                <div className="bg-white border border-[#e8e0d0] p-10 shadow-sm border-t-4 border-accent">
                   <div className="flex items-center justify-between mb-8">
@@ -319,6 +466,13 @@ function AnalyzerPage() {
                   <div className="text-lg italic text-[#6b6560] font-serif leading-relaxed mb-8">
                     "{result.rightsOverview}"
                   </div>
+
+                  <button 
+                     onClick={handleLearnMore}
+                     className="mb-8 flex items-center gap-2 text-[10px] font-bold text-accent uppercase tracking-widest hover:underline"
+                   >
+                     Learn More About These Rights <Info size={12} />
+                   </button>
                   
                   <div className="grid gap-4 mt-12">
                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#6b6560] font-bold mb-2">Identified Legal Acts</p>
@@ -370,6 +524,128 @@ function AnalyzerPage() {
                </div>
             </div>
           )}
+
+          {result && activeView === 'roadmap' && (
+            <div className="lex-result" ref={resultsRef}>
+              <ActionRoadmap 
+                roadmap={result.actionRoadmap || []} 
+                language={result.languageDetected}
+                onDraftClick={(type) => {
+                  const step = result.actionRoadmap?.find((s: any) => s.actionType === type);
+                  handleDraftAction(type, step?.title || "Legal Document");
+                }}
+              />
+            </div>
+          )}
+
+          {/* Draft Modal */}
+          <AnimatePresence>
+            {draftResult && (
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-primary/40 backdrop-blur-sm"
+              >
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+                  className="bg-[#fdfaf5] border-2 border-accent w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+                >
+                  <div className="p-6 border-b border-[#e8e0d0] flex items-center justify-between bg-white">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">AI Document Engine</p>
+                      <h2 className="font-serif text-xl font-bold">Legal Document Draft</h2>
+                    </div>
+                    <button onClick={() => setDraftResult(null)} className="p-2 hover:bg-secondary/40 rounded-full transition-colors">
+                      <X size={20} />
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-10 font-serif text-base leading-[1.8] whitespace-pre-wrap bg-white m-4 border border-[#e8e0d0] shadow-inner select-text text-primary/90">
+                    {draftResult.replace(/[#*]/g, '')}
+                  </div>
+                  <div className="p-6 border-t border-[#e8e0d0] flex items-center justify-between bg-secondary/10">
+                    <p className="text-[11px] text-muted-foreground italic max-w-[240px]">
+                      This is an AI-generated draft. Please review carefully with a lawyer before sending.
+                    </p>
+                    <div className="flex gap-4">
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(draftResult);
+                          alert("Copied to clipboard!");
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 border border-primary text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                      >
+                        <Copy size={14} /> Copy Draft
+                      </button>
+                      <button onClick={() => window.print()} className="px-4 py-2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest hover:bg-primary/90 shadow-lg">
+                        Print Draft
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Drafting Loader */}
+          <AnimatePresence>
+            {isDrafting && (
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
+                className="fixed bottom-10 right-10 z-[110] bg-white border-2 border-accent p-6 shadow-2xl flex items-center gap-4"
+              >
+                <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-accent">AI Drafting...</p>
+                  <p className="text-xs font-bold font-serif">Generating Legal Verbiage</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+           {/* Explanation Modal */}
+          <AnimatePresence>
+            {detailedExplanation && (
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-primary/40 backdrop-blur-sm"
+              >
+                <motion.div 
+                   initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+                   className="bg-white border-2 border-accent w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+                >
+                  <div className="p-6 border-b border-[#e8e0d0] flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Detailed Legal Guidance</p>
+                      <h2 className="font-serif text-xl font-bold">Deep-Dive Explanation</h2>
+                    </div>
+                    <button onClick={() => setDetailedExplanation(null)} className="p-2 hover:bg-secondary/40 rounded-full transition-colors">
+                      <X size={20} />
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-10 font-serif text-base leading-[1.8] whitespace-pre-wrap select-text text-primary/80">
+                    {detailedExplanation}
+                  </div>
+                  <div className="p-6 border-t border-[#e8e0d0] flex justify-end bg-secondary/10">
+                    <button onClick={() => setDetailedExplanation(null)} className="px-6 py-2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest hover:bg-primary/90">
+                      Close Guidance
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Explanation Loader */}
+          <AnimatePresence>
+            {isExplaining && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[120] bg-white border-2 border-accent p-8 shadow-2xl text-center"
+              >
+                <div className="w-12 h-12 rounded-full border-4 border-accent border-t-transparent animate-spin mx-auto mb-4" />
+                <p className="text-xs font-bold uppercase tracking-widest text-accent">Calling Legal Expert AI...</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {error && (
             <div className="bg-red-50 border border-red-200 p-6 flex items-center gap-4 mt-8">

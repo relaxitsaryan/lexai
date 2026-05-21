@@ -18,7 +18,7 @@ export function Footer() {
 
         <FooterCol title="Product" links={[
           ["/features", "Features"],
-          ["/pricing", "Pricing"],
+          // ["/pricing", "Pricing"],
           ["/features", "Document Generator"],
           ["/features", "Contract Scanner"],
         ]} />

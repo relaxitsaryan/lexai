@@ -49,26 +49,131 @@ interface Message {
 
 const PRESET_SITUATIONS = [
   {
-    title: "Unpaid Salary Notice",
-    preview: "My employer hasn't paid me for 2 months...",
-    text: "My employer in Bangalore has not paid my salary for the last 2 months (March and April). When I ask the HR or my manager, they tell me they are facing cash flow issues. Yesterday, they threatened to terminate my contract immediately if I keep asking. I have my employment contract, monthly salary slips, and emails showing my work performance.",
+    title: "Unpaid Salary",
+    text: "My employer in Bangalore has not paid my salary for the last 2 months. When I ask the HR, they say they have cash flow issues. Now they are threatening to fire me.",
     icon: Briefcase,
     domain: "Employment Law"
   },
   {
-    title: "Security Deposit Dispute",
-    preview: "Landlord refuses to refund ₹50,000...",
-    text: "I vacated my rented flat in Delhi after giving a 1-month notice as per our agreement. The landlord is refusing to refund my security deposit of ₹50,000. He is claiming that the entire amount is being deducted for painting and general 'wear and tear' of the house. The house was left in perfectly clean condition, and we have photos from the day we moved out.",
+    title: "Tenant Eviction",
+    text: "My landlord told me to vacate within 7 days without notice. I have a valid rental agreement for 8 more months and have paid all my bills on time.",
     icon: Scale,
     domain: "Rent & Tenancy"
   },
   {
-    title: "E-Commerce Refund Denied",
-    preview: "Received a brick instead of a phone...",
-    text: "I ordered a smartphone worth ₹28,000 from an online shopping platform. When the package was delivered, it contained a clay brick and some paper instead of the phone. I filmed an unboxing video. I immediately contacted their support, but they rejected my claim saying the package was delivered intact, and they have now blocked my account.",
+    title: "E-commerce Fraud",
+    text: "I bought a phone online for ₹50,000. It arrived broken and the box was tampered with. The seller refuses to refund me and says I broke it.",
     icon: ShieldAlert,
     domain: "Consumer Protection"
-  }
+  },
+  {
+    title: "UPI Fraud",
+    text: "I received a call from someone claiming to be from my bank. They asked for a KYC update and I shared an OTP. Immediately, ₹20,000 was debited from my account via UPI.",
+    icon: ShieldAlert,
+    domain: "Cyber Law"
+  },
+  {
+    title: "Gratuity Claim",
+    text: "I worked for a private firm for 6 years and resigned last month. The company is refusing to pay my gratuity, saying I was an 'at-will' employee.",
+    icon: Briefcase,
+    domain: "Employment Law"
+  },
+  {
+    title: "RERA Complaint",
+    text: "I booked a flat in 2021 with a delivery date of Dec 2023. The builder has only completed 40% of the work and is now asking for more money for 'increased raw material costs'.",
+    icon: Scale,
+    domain: "Real Estate Law"
+  },
+  {
+    title: "Medical Negligence",
+    text: "My father underwent a minor knee surgery, but due to a doctor's error, he developed a severe infection and now cannot walk. The hospital refuses to share medical records.",
+    icon: AlertTriangle,
+    domain: "Consumer Protection"
+  },
+  {
+    title: "Insurance Reject",
+    text: "My health insurance claim for a gall bladder surgery was rejected. They claim it was a 'pre-existing disease' even though I've had the policy for 5 years.",
+    icon: FileText,
+    domain: "Consumer Protection"
+  },
+  {
+    title: "Mutual Divorce",
+    text: "My spouse and I want to file for a mutual consent divorce. We have been living separately for 14 months and have agreed on all terms including alimony.",
+    icon: Scale,
+    domain: "Family Law"
+  },
+  {
+    title: "Illegal Encroachment",
+    text: "My neighbor has started a semi-permanent construction that extends 3 feet into my ancestral land. They are threatening me when I try to stop them.",
+    icon: MapPin,
+    domain: "Property Law"
+  },
+  {
+    title: "Sexual Harassment",
+    text: "I am facing persistent unwanted advances from my senior manager. I complained to HR, but they are trying to suppress the matter and asking me to 'adjust'.",
+    icon: ShieldAlert,
+    domain: "Employment Law"
+  },
+  {
+    title: "Child Custody",
+    text: "After our separation, my husband is not allowing me to meet our 6-year-old daughter. He is keeping her in a different city without my consent.",
+    icon: Scale,
+    domain: "Family Law"
+  },
+  {
+    title: "Social Defamation",
+    text: "A former business partner is spreading false rumors about me on social media, claiming I embezzled funds. This is damaging my reputation and current business.",
+    icon: AlertTriangle,
+    domain: "Cyber Law"
+  },
+  {
+    title: "Maintenance Claim",
+    text: "I am a homemaker with two children. My husband has deserted us and is not providing any financial support. I need to claim maintenance for our survival.",
+    icon: Scale,
+    domain: "Family Law"
+  },
+  {
+    title: "PF Withdrawal",
+    text: "I applied for a PF withdrawal for my daughter's wedding 3 months ago. The EPFO portal shows 'under process' and the local office is not responding to calls.",
+    icon: Briefcase,
+    domain: "Administrative Law"
+  },
+  {
+    title: "Partition Dispute",
+    text: "My brothers are refusing to give me my share of our father's self-acquired property, claiming that because I am a married daughter, I have no rights.",
+    icon: Scale,
+    domain: "Property Law"
+  },
+  {
+    title: "Gift Deed Revocation",
+    text: "I gifted my house to my son on the condition that he takes care of me. Now he is mistreating me and trying to throw me out. I want to revoke the gift deed.",
+    icon: Scale,
+    domain: "Property Law"
+  },
+  {
+    title: "RTI Application Delay",
+    text: "I filed an RTI with the Municipal Corporation regarding local road tenders 45 days ago. I haven't received any response despite the 30-day legal limit.",
+    icon: FileText,
+    domain: "Public Law"
+  },
+  {
+    title: "IP Theft",
+    text: "I shared my startup's product design with a potential investor. They didn't invest but have now launched a near-identical product under a different name.",
+    icon: Briefcase,
+    domain: "Corporate Law"
+  },
+  {
+    title: "Cyber Bullying",
+    text: "Someone has created a fake profile using my photos and is sending offensive messages to my friends and family. I have reported to the platform but no action taken.",
+    icon: ShieldAlert,
+    domain: "Cyber Law"
+  },
+  {
+    title: "Cheque Bounce",
+    text: "A client gave me a cheque for ₹1.5 Lakhs for services rendered. The cheque has bounced due to 'insufficient funds'. The client is now ghosting me.",
+    icon: Scale,
+    domain: "Criminal Law"
+  },
 ];
 
 const MOCK_ANSWERS: Record<string, AnalysisData> = {
@@ -641,9 +746,9 @@ export function SituationAnalyzer() {
                 <div className="flex justify-start">
                   <div className="bg-white border border-[#1E2638]/5 rounded-2xl p-6 shadow-sm flex items-center gap-3">
                     <div className="flex gap-1.5">
-                      <span className="w-2.5 h-2.5 bg-[#BFA37C]/60 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                      <span className="w-2.5 h-2.5 bg-[#BFA37C]/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                      <span className="w-2.5 h-2.5 bg-[#BFA37C]/60 rounded-full animate-bounce" />
+                      <span className="w-2.5 h-2.5 bg-[#BFA37C]/60 rounded-full" />
+                      <span className="w-2.5 h-2.5 bg-[#BFA37C]/60 rounded-full" />
+                      <span className="w-2.5 h-2.5 bg-[#BFA37C]/60 rounded-full" />
                     </div>
                     <span className="text-xs text-[#1E2638]/50 font-mono">Analyzing legal situation...</span>
                   </div>
@@ -698,7 +803,7 @@ export function SituationAnalyzer() {
                   </button>
 
                   {isListening && (
-                    <span className="text-xs text-red-500 font-mono animate-pulse">Listening...</span>
+                    <span className="text-xs text-red-500 font-mono">Listening...</span>
                   )}
                 </div>
 
