@@ -51,7 +51,7 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
   };
 
   return (
-    <div className="space-y-8 pb-20 roadmap-container">
+    <div className="space-y-6 sm:space-y-8 pb-20 roadmap-container">
       <style>{`
         @media print {
           body * { visibility: hidden; }
@@ -65,24 +65,24 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
       `}</style>
       
       {/* Progress Header */}
-      <div className="bg-primary text-white p-8 shadow-lg relative overflow-hidden border-b-4 border-accent">
+      <div className="bg-primary text-white p-5 sm:p-8 shadow-lg relative overflow-hidden border-b-4 border-accent">
         <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
           <Clock size={120} />
         </div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6">
           <div>
             <p className="text-[10px] uppercase tracking-[0.4em] text-accent font-bold mb-2">Progress Overview</p>
-            <h2 className="font-serif text-3xl font-bold">Action Roadmap</h2>
-            <p className="mt-2 text-white/70 text-sm max-w-md">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold">Action Roadmap</h2>
+            <p className="mt-2 text-white/70 text-xs sm:text-sm max-w-md">
               Follow these steps to resolve your legal situation. Mark them as completed to track your journey toward justice.
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-4xl font-serif font-bold text-accent">{progress}%</div>
-            <p className="text-[10px] uppercase tracking-widest font-bold opacity-60">Completion Rate</p>
+          <div className="text-left sm:text-right">
+            <div className="text-3xl sm:text-4xl font-serif font-bold text-accent">{progress}%</div>
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold opacity-60">Completion Rate</p>
           </div>
         </div>
-        <div className="mt-8 h-1.5 bg-white/10 rounded-full overflow-hidden no-print">
+        <div className="mt-6 sm:mt-8 h-1.5 bg-white/10 rounded-full overflow-hidden no-print">
           <motion.div 
             className="h-full bg-accent"
             initial={{ width: 0 }}
@@ -93,7 +93,7 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
       </div>
 
       {/* Roadmap Steps */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {roadmap.map((step, index) => {
           const isCompleted = completedSteps.includes(step.step);
           
@@ -106,43 +106,43 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
             >
               {/* Step indicator line */}
               {index !== roadmap.length - 1 && (
-                <div className="absolute left-[39px] top-[80px] bottom-[-24px] w-0.5 bg-[#e8e0d0] z-0 no-print" />
+                <div className="absolute left-[29px] sm:left-[39px] top-[70px] sm:top-[80px] bottom-[-24px] w-0.5 bg-[#e8e0d0] z-0 no-print" />
               )}
 
-              <div className="p-6 md:p-8 flex items-start gap-6 relative z-10">
+              <div className="p-4 sm:p-6 md:p-8 flex items-start gap-4 sm:gap-6 relative z-10">
                 {/* Checkbox / Number */}
                 <button 
                   onClick={() => toggleStep(step.step)}
-                  className={`w-10 h-10 shrink-0 border-2 flex items-center justify-center transition-all no-print
+                  className={`w-8 h-8 sm:w-10 sm:h-10 shrink-0 border-2 flex items-center justify-center transition-all no-print cursor-pointer
                     ${isCompleted 
                       ? "bg-emerald-500 border-emerald-500 text-white" 
                       : "bg-white border-[#e8e0d0] text-primary hover:border-accent"}
                   `}
                 >
-                  {isCompleted ? <CheckCircle2 size={24} /> : <span className="font-serif font-bold text-lg">{step.step}</span>}
+                  {isCompleted ? <CheckCircle2 size={20} /> : <span className="font-serif font-bold text-base sm:text-lg">{step.step}</span>}
                 </button>
                 {/* Print version of step number */}
-                <div className="w-10 h-10 hidden print:flex shrink-0 border-2 border-primary items-center justify-center">
-                   <span className="font-serif font-bold text-lg">{step.step}</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 hidden print:flex shrink-0 border-2 border-primary items-center justify-center">
+                   <span className="font-serif font-bold text-base sm:text-lg">{step.step}</span>
                 </div>
 
-                <div className="flex-1">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
                     <div>
-                      <h3 className={`font-serif text-2xl font-bold transition-all ${isCompleted ? "text-emerald-700 line-through opacity-60" : "text-primary"}`}>
+                      <h3 className={`font-serif text-xl sm:text-2xl font-bold transition-all truncate leading-tight ${isCompleted ? "text-emerald-700 line-through opacity-60" : "text-primary"}`}>
                         {step.title}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-4 mt-2">
-                        <span className="flex items-center gap-1.5 text-xs uppercase tracking-widest font-bold text-accent">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2">
+                        <span className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-widest font-bold text-accent">
                           <Clock size={12} /> {step.timeline}
                         </span>
-                        <span className="flex items-center gap-1.5 text-xs uppercase tracking-widest font-bold text-primary/60">
+                        <span className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-widest font-bold text-primary/60">
                           <MapPin size={12} /> {step.authority}
                         </span>
                       </div>
                     </div>
                     {isCompleted && (
-                      <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-widest px-3 py-1 border border-emerald-200 no-print">
+                      <span className="w-fit bg-emerald-50 text-emerald-700 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-3 py-1 border border-emerald-200 no-print">
                         Completed
                       </span>
                     )}
@@ -154,18 +154,18 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
                       animate={{ opacity: 1, height: "auto" }}
                       className="space-y-6 pt-4 border-t border-[#f0eee9]"
                     >
-                      <div className="grid md:grid-cols-2 gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                         <div>
                           <p className="text-[10px] uppercase font-bold text-muted-foreground mb-3 tracking-widest">How to Approach</p>
-                          <div className="p-4 bg-secondary/30 border border-[#e8e0d0] text-base leading-relaxed italic">
+                          <div className="p-4 bg-secondary/30 border border-[#e8e0d0] text-sm sm:text-base leading-relaxed italic">
                             {step.howTo}
                           </div>
                           <p className="mt-4 text-[10px] uppercase font-bold text-muted-foreground mb-3 tracking-widest">Documents Needed</p>
                           <ul className="space-y-2">
                             {step.documents.map((doc, i) => (
-                              <li key={i} className="flex items-start gap-2 text-sm font-semibold text-primary/80">
+                              <li key={i} className="flex items-start gap-2 text-xs sm:text-sm font-semibold text-primary/80">
                                 <FileText size={14} className="mt-0.5 text-accent shrink-0" />
-                                {doc}
+                                <span>{doc}</span>
                               </li>
                             ))}
                           </ul>
@@ -173,25 +173,25 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
                         <div className="space-y-6">
                           <div>
                             <p className="text-[10px] uppercase font-bold text-muted-foreground mb-3 tracking-widest">Deadline Alert</p>
-                            <div className="p-4 bg-red-50 border border-red-100 text-red-700 text-sm font-bold leading-relaxed">
+                            <div className="p-4 bg-red-50 border border-red-100 text-red-700 text-xs sm:text-sm font-bold leading-relaxed">
                               {step.deadline}
                             </div>
                           </div>
                           <div className="flex flex-col gap-2 no-print">
                             <button 
                               onClick={() => onDraftClick?.(step.actionType)}
-                              className="w-full flex items-center justify-between px-5 py-3 bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary/95 transition-all"
+                              className="w-full flex items-center justify-between px-5 py-3.5 bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-primary/95 transition-all cursor-pointer shadow-sm"
                             >
-                              Draft Necessary Document
+                              <span>Draft Necessary Document</span>
                               <ArrowRight size={14} />
                             </button>
                             <a 
                               href={getPortalLink(step.authority)} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="w-full flex items-center justify-between px-5 py-3 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest hover:bg-secondary/40 transition-all cursor-pointer shadow-sm"
+                              className="w-full flex items-center justify-between px-5 py-3.5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest hover:bg-secondary/40 transition-all cursor-pointer shadow-sm"
                             >
-                              Official {step.authority.split(' ').slice(-1)} Portal
+                              <span>Official {step.authority.split(' ').slice(-1)} Portal</span>
                               <ExternalLink size={14} />
                             </a>
                           </div>
@@ -207,16 +207,16 @@ export function ActionRoadmap({ roadmap, onDraftClick, language = "English" }: A
       </div>
 
       {/* Footer Actions */}
-      <div className="flex flex-wrap gap-4 pt-8 footer-actions">
+      <div className="flex flex-col sm:flex-row gap-4 pt-6 sm:pt-8 footer-actions">
         <button 
           onClick={() => window.print()}
-          className="flex items-center gap-2 px-6 py-3 border border-primary text-primary text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-md group"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 border border-primary text-primary text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-md group cursor-pointer"
         >
           <Download size={16} className="group-hover:translate-y-0.5 transition-transform" /> Download Action Plan PDF
         </button>
         <Link 
           to="/contact"
-          className="flex items-center gap-2 px-6 py-3 border border-primary/20 text-primary text-sm font-bold uppercase tracking-widest hover:bg-secondary/40 transition-all shadow-sm"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 border border-primary/20 text-primary text-xs sm:text-sm font-bold uppercase tracking-widest hover:bg-secondary/40 transition-all shadow-sm"
         >
           <MessageSquare size={16} /> I'm stuck on a step
         </Link>

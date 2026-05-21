@@ -115,6 +115,10 @@ export const analyzeLegalSituation = createServerFn({ method: "POST" })
         response_format: { type: "json_object" }
       }),
     });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || "Failed to analyze legal situation via Groq API");
+    }
     return response.json();
   });
 
@@ -131,6 +135,10 @@ export const getLegalRights = createServerFn({ method: "POST" })
         response_format: { type: "json_object" }
       }),
     });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || "Failed to fetch legal rights via Groq API");
+    }
     return response.json();
   });
 
@@ -179,6 +187,10 @@ export const generateLegalDraft = createServerFn({ method: "POST" })
         temperature: 0.4,
       }),
     });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || "Failed to generate legal draft via Groq API");
+    }
     return response.json();
   });
 export const getDetailedExplanation = createServerFn({ method: "POST" })
@@ -209,5 +221,9 @@ export const getDetailedExplanation = createServerFn({ method: "POST" })
         temperature: 0.5,
       }),
     });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || "Failed to get detailed explanation via Groq API");
+    }
     return response.json();
   });
