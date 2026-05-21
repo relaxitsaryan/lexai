@@ -7,10 +7,10 @@ import { Check } from "lucide-react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — LexAI" },
-      { name: "description", content: "Get early access to LexAI, partner with us, or request the developer API." },
-      { property: "og:title", content: "Contact — LexAI" },
-      { property: "og:description", content: "Reach the LexAI team — early access, partnerships and API." },
+      { title: "Contact — ApnaNyaya" },
+      { name: "description", content: "Get early access to ApnaNyaya, partner with us, or request the developer API." },
+      { property: "og:title", content: "Contact — ApnaNyaya" },
+      { property: "og:description", content: "Reach the ApnaNyaya team — early access, partnerships and API." },
     ],
   }),
   component: ContactPage,
@@ -37,14 +37,14 @@ function ContactPage() {
         <div className="grid lg:grid-cols-12 gap-12">
           <Reveal className="lg:col-span-5 space-y-10">
             <Block label="Early access" body="Be among the first 1,000 users when the public beta launches. Free forever." />
-            <Block label="Partnerships" body="HR teams, startups, NGOs and co-working spaces — white-label LexAI for your community." />
-            <Block label="API" body="Building a legal-adjacent product? Embed LexAI's retrieval and document engine." />
+            <Block label="Partnerships" body="HR teams, startups, NGOs and co-working spaces — white-label ApnaNyaya for your community." />
+            <Block label="API" body="Building a legal-adjacent product? Embed ApnaNyaya's retrieval and document engine." />
             <Block label="Press & speaking" body="Hackathons, panels, podcasts — we'd love to talk about access to justice." />
             <div className="rule" />
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-primary/70 mb-2">Direct</p>
-              <a href="mailto:hello@lexai.in" className="font-serif text-2xl text-primary hover:text-accent transition-colors">
-                hello@lexai.in
+              <a href="mailto:hello@apnanyaya.in" className="font-serif text-2xl text-primary hover:text-accent transition-colors">
+                hello@apnanyaya.in
               </a>
             </div>
           </Reveal>

@@ -8,9 +8,9 @@ import { FEATURES, STATS, BARRIERS, USERS, COMPETITORS } from "@/lib/lex-data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LexAI — Legal Intelligence for Every Indian" },
-      { name: "description", content: "Describe your legal problem in plain Hindi or English. LexAI tells you your rights, generates real documents, and gives you a step-by-step action plan — in under 3 minutes." },
-      { property: "og:title", content: "LexAI — Legal Intelligence for Every Indian" },
+      { title: "ApnaNyaya — Legal Intelligence for Every Indian" },
+      { name: "description", content: "Describe your legal problem in plain Hindi or English. ApnaNyaya tells you your rights, generates real documents, and gives you a step-by-step action plan — in under 3 minutes." },
+      { property: "og:title", content: "ApnaNyaya — Legal Intelligence for Every Indian" },
       { property: "og:description", content: "Know your rights, generate court-standard documents, and act — in minutes, in your language." },
     ],
   }),
@@ -39,8 +39,8 @@ function ChatBotFAB() {
       to="/analyzer"
       className="fixed bottom-8 right-8 z-[60] flex items-center flex-row-reverse gap-3 group"
     >
-      <div className="bg-primary text-primary-foreground p-4 shadow-2xl hover:bg-accent hover:text-accent-foreground transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
-        <Bot size={28} />
+      <div className="bg-primary p-2 shadow-2xl hover:bg-accent transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
+        <img src="/Logo.png" alt="Logo" className="w-10 h-10 object-contain" />
       </div>
       <div className="hidden md:block bg-background border border-border px-4 py-2 text-[10px] uppercase tracking-widest text-primary shadow-xl font-medium opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
         Situation Analyzer
@@ -77,7 +77,7 @@ function Hero() {
             </Reveal>
             <Reveal delay={0.15}>
               <p className="mt-8 text-lg md:text-xl text-primary max-w-2xl leading-relaxed">
-                Describe your problem in plain Hindi or English. LexAI tells you your rights, generates real documents, and gives you a step-by-step action plan — in under three minutes.
+                Describe your problem in plain Hindi or English. ApnaNyaya tells you your rights, generates real documents, and gives you a step-by-step action plan — in under three minutes.
               </p>
             </Reveal>
             <Reveal delay={0.25}>
@@ -110,7 +110,7 @@ function Hero() {
                   "My employer hasn't paid me for 2 months."
                 </p>
                 <div className="rule my-5" />
-                <p className="text-xs uppercase tracking-[0.18em] text-accent">LexAI classified</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-accent">ApnaNyaya classified</p>
                 <ul className="mt-3 space-y-2 text-sm text-foreground">
                   <li>· Labour Law</li>
                   <li>· Payment of Wages Act 1936</li>
@@ -275,7 +275,7 @@ function Users() {
   return (
     <Section className="py-16">
       <Reveal>
-        <Eyebrow>03 — Who Uses LexAI</Eyebrow>
+        <Eyebrow>03 — Who Uses ApnaNyaya</Eyebrow>
         <h2 className="mt-6 font-serif text-4xl md:text-5xl text-primary max-w-3xl leading-tight">
           Built not for enterprises — for every Indian who has ever faced a legal problem.
         </h2>
@@ -297,7 +297,7 @@ function Users() {
 
 function Compare() {
   const cols = [
-    ["LexAI", "lex"],
+    ["ApnaNyaya", "lex"],
     ["VakilSearch", "vakil"],
     ["LawRato", "lawrato"],
     ["DocOnline", "doconline"],
@@ -366,7 +366,7 @@ function CTA() {
               Justice should not require a lawyer to <em className="italic text-accent">begin.</em>
             </h2>
             <p className="mt-6 text-primary-foreground/75 max-w-xl">
-              Join the waitlist for the LexAI public beta. Free forever for citizens, with affordable Pro and pay-per-document options.
+              Join the waitlist for the ApnaNyaya public beta. Free forever for citizens, with affordable Pro and pay-per-document options.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link to="/contact" className="bg-accent text-accent-foreground px-6 py-3.5 text-sm hover:opacity-90 transition-opacity">

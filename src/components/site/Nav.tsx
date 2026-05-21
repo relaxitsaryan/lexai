@@ -30,11 +30,9 @@ export function Nav() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="h-8 w-8 border border-primary flex items-center justify-center">
-            <span className="font-serif text-primary text-lg leading-none">L</span>
-          </div>
+          <img src="/Logo.png" alt="ApnaNyaya Logo" className="h-8 w-auto" />
           <span className="font-serif text-xl tracking-tight text-primary">
-            LexAI
+            ApnaNyaya
           </span>
         </Link>
 

@@ -6,10 +6,10 @@ import { ROADMAP, TEAM } from "@/lib/lex-data";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — LexAI" },
-      { name: "description", content: "LexAI is a legal aid platform for every Indian. Know your rights, generate documents, and act — in minutes, in your language." },
-      { property: "og:title", content: "About — LexAI" },
-      { property: "og:description", content: "LexAI is a legal aid platform for every Indian. Know your rights, generate documents, and act — in minutes, in your language." },
+      { title: "About — ApnaNyaya" },
+      { name: "description", content: "ApnaNyaya is a legal aid platform for every Indian. Know your rights, generate documents, and act — in minutes, in your language." },
+      { property: "og:title", content: "About — ApnaNyaya" },
+      { property: "og:description", content: "ApnaNyaya is a legal aid platform for every Indian. Know your rights, generate documents, and act — in minutes, in your language." },
     ],
   }),
   component: AboutPage,
@@ -28,7 +28,7 @@ function AboutPage() {
         <div className="mt-12 grid lg:grid-cols-2 gap-10">
           <Reveal delay={0.1}>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              India's legal system was built for a small minority that can navigate it. LexAI is built for everyone else — the farmer, the student, the gig worker, the tenant, the founder, the citizen.
+              India's legal system was built for a small minority that can navigate it. ApnaNyaya is built for everyone else — the farmer, the student, the gig worker, the tenant, the founder, the citizen.
             </p>
           </Reveal>
           <Reveal delay={0.2}>

@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 const SYSTEM_PROMPT = `
-You are LexAI, a professional and empathetic legal aid assistant for Indian citizens.
+You are ApnaNyaya, a professional and empathetic legal aid assistant for Indian citizens.
 Your goal is to provide clear, accessible legal information and aid.
 
 Supported Languages: English, Hindi, Hinglish, and regional Indian languages.
@@ -45,7 +45,7 @@ export const chatWithGroq = createServerFn({ method: "POST" })
   });
 
 const ANALYZER_SYSTEM_PROMPT = `
-You are LexAI's Situation Analyzer, an elite AI legal assistant.
+You are ApnaNyaya's Situation Analyzer, an elite AI legal assistant.
 Analyze the user's legal situation and return a precise, structured legal analysis in JSON.
 
 Structure:
@@ -73,7 +73,7 @@ Structure:
 `.trim();
 
 const RIGHTS_ENGINE_PROMPT = `
-You are LexAI's Know Your Rights Engine — a specialized Indian legal rights advisor.
+You are ApnaNyaya's Know Your Rights Engine — a specialized Indian legal rights advisor.
 Identify EXACTLY which Indian laws protect the user. Return ONLY JSON.
 
 Structure:
@@ -157,7 +157,7 @@ export const generateLegalDraft = createServerFn({ method: "POST" })
   .handler(async (ctx: any) => {
     const { situation, actionType, stepTitle } = ctx.data as { situation: string; actionType: string; stepTitle: string };
     const prompt = `
-      You are LexAI's Legal Document Engine. 
+      You are ApnaNyaya's Legal Document Engine. 
       Generate a professional, court-standard legal draft for the following:
       Action: ${stepTitle} (${actionType})
       Situation: ${situation}
@@ -185,7 +185,7 @@ export const getDetailedExplanation = createServerFn({ method: "POST" })
   .handler(async (ctx: any) => {
     const { situation, context } = ctx.data as { situation: string; context: string };
     const prompt = `
-      You are LexAI's Senior Legal Strategist. 
+      You are ApnaNyaya's Senior Legal Strategist. 
       The user wants a DETAILED, deep-dive explanation on "What to do next" for their situation.
       
       Situation: ${situation}

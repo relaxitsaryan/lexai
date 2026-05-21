@@ -6,6 +6,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ActionRoadmap } from "@/components/analyzer/ActionRoadmap";
 
 export const Route = createFileRoute("/analyzer")({
+  head: () => ({
+    meta: [
+      { title: "Situation Analyzer — ApnaNyaya" },
+      { name: "description", content: "Analyze your legal situation and get an actionable roadmap instantly with ApnaNyaya." },
+    ],
+  }),
   component: AnalyzerPage,
 });
 
@@ -215,8 +221,8 @@ function AnalyzerPage() {
       <aside className="w-64 border-r border-[#e8e0d0] bg-[#fdfaf5] flex flex-col z-20 shadow-sm shrink-0">
         <div className="p-6 border-b border-[#e8e0d0]">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 bg-primary text-white flex items-center justify-center font-bold text-lg rounded-sm group-hover:scale-105 transition-transform">L</div>
-            <span className="font-serif font-bold text-xl tracking-tight">LexAI</span>
+            <img src="/Logo.png" alt="Logo" className="w-8 h-8 object-contain group-hover:scale-105 transition-transform" />
+            <span className="font-serif font-bold text-xl tracking-tight">ApnaNyaya</span>
           </Link>
           <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Workspace Alpha</p>
         </div>
@@ -276,7 +282,9 @@ function AnalyzerPage() {
 
         <div className="p-6 border-t border-[#e8e0d0]">
           <div className="flex items-center gap-3 p-3 bg-white border border-[#e8e0d0] rounded-lg">
-            <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center font-bold text-xs text-accent">A</div>
+            <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 overflow-hidden">
+              <img src="/Logo.png" alt="User" className="w-full h-full object-cover" />
+            </div>
             <div className="flex-1">
               <p className="text-[11px] font-bold leading-none">Aryan Mahtha</p>
               <p className="text-[9px] text-[#b5892f] font-bold mt-1 uppercase tracking-wider">Advocate Elite</p>

@@ -72,14 +72,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LexAI — Legal Intelligence for Every Indian" },
+      { title: "ApnaNyaya — Legal Intelligence for Every Indian" },
       { name: "description", content: "Know your rights, generate court-standard documents, and act — in minutes, in your language." },
-      { name: "author", content: "LexAI" },
-      { property: "og:title", content: "LexAI — Legal Intelligence for Every Indian" },
+      { name: "author", content: "ApnaNyaya" },
+      { property: "og:title", content: "ApnaNyaya — Legal Intelligence for Every Indian" },
       { property: "og:description", content: "Know your rights, generate court-standard documents, and act — in minutes, in your language." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/Logo.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/Logo.png" },
     ],
     links: [
+      {
+        rel: "icon",
+        href: "/Logo.png",
+        type: "image/png",
+      },
       {
         rel: "stylesheet",
         href: appCss,

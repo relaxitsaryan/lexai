@@ -7,9 +7,9 @@ import { PRICING_TIERS, PAY_PER_DOC, B2B } from "@/lib/lex-data";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — LexAI" },
+      { title: "Pricing — ApnaNyaya" },
       { name: "description", content: "Free for citizens. Pro from ₹299/month. Pay-per-document from ₹49. B2B and API plans for HR, startups, NGOs and developers." },
-      { property: "og:title", content: "Pricing — LexAI" },
+      { property: "og:title", content: "Pricing — ApnaNyaya" },
       { property: "og:description", content: "Affordable legal intelligence — freemium, pay-per-document, B2B and API." },
     ],
   }),
@@ -107,7 +107,7 @@ function PricingPage() {
         <Reveal>
           <Eyebrow>B2B & Enterprise</Eyebrow>
           <h2 className="mt-6 font-serif text-4xl text-primary leading-tight max-w-3xl">
-            White-label LexAI for HR teams, startups, NGOs and co-working spaces.
+            White-label ApnaNyaya for HR teams, startups, NGOs and co-working spaces.
           </h2>
         </Reveal>
         <div className="mt-12 grid md:grid-cols-2 gap-px bg-border border border-border">

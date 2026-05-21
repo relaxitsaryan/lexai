@@ -7,9 +7,9 @@ import { FEATURES } from "@/lib/lex-data";
 export const Route = createFileRoute("/features")({
   head: () => ({
     meta: [
-      { title: "Features — LexAI" },
-      { name: "description", content: "Situation Analyzer, Document Generator, Contract Scanner, Action Roadmap, Multilingual chat, Lawyer marketplace and a Deadline tracker — the full LexAI platform." },
-      { property: "og:title", content: "Features — LexAI" },
+      { title: "Features — ApnaNyaya" },
+      { name: "description", content: "Situation Analyzer, Document Generator, Contract Scanner, Action Roadmap, Multilingual chat, Lawyer marketplace and a Deadline tracker — the full ApnaNyaya platform." },
+      { property: "og:title", content: "Features — ApnaNyaya" },
       { property: "og:description", content: "Eight features that take a real-life problem and convert it into action — in minutes." },
     ],
   }),
@@ -26,7 +26,7 @@ function FeaturesPage() {
             Eight features. <em className="italic text-accent">One promise.</em>
           </h1>
           <p className="mt-8 text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            LexAI is not a chatbot. It is a full-stack legal intelligence platform that takes a real-life situation and converts it into action — instantly, in your language.
+            ApnaNyaya is not a chatbot. It is a full-stack legal intelligence platform that takes a real-life situation and converts it into action — instantly, in your language.
           </p>
         </Reveal>
       </Section>

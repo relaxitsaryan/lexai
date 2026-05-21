@@ -50,7 +50,7 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Namaste! I am LexAI, your legal aid assistant. How can I help you today? You can speak or type in Hindi, English, or Hinglish.",
+      content: "Namaste! I am ApnaNyaya, your legal aid assistant. How can I help you today? You can speak or type in Hindi, English, or Hinglish.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -101,11 +101,11 @@ export function ChatInterface() {
       {/* Header */}
       <div className="p-5 border-b border-border bg-secondary/30 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
-          <div className="p-2.5 border border-primary/20 bg-background text-primary rounded-none shadow-sm">
-            <Bot size={20} />
+          <div className="p-1 px-2 border border-primary/20 bg-background rounded-none shadow-sm flex items-center justify-center">
+            <img src="/Logo.png" alt="Bot" className="h-6 w-auto" />
           </div>
           <div>
-            <h3 className="font-serif text-base font-semibold text-primary tracking-tight">LexAI Assistant</h3>
+            <h3 className="font-serif text-base font-semibold text-primary tracking-tight">ApnaNyaya Assistant</h3>
             <div className="mt-0.5 flex items-center gap-2">
               <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
               <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
@@ -136,10 +136,14 @@ export function ChatInterface() {
             className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div className={`flex gap-4 max-w-[85%] ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-              <div className={`w-9 h-9 shrink-0 border flex items-center justify-center rounded-none text-[9px] font-bold tracking-tighter
-                ${m.role === "user" ? "bg-primary text-primary-foreground border-primary" : "bg-background text-primary border-border shadow-sm"}
+              <div className={`w-9 h-9 shrink-0 border flex items-center justify-center rounded-none overflow-hidden
+                ${m.role === "user" ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border shadow-sm"}
               `}>
-                {m.role === "user" ? "USER" : "LEX"}
+                {m.role === "user" ? (
+                  <span className="text-[9px] font-bold tracking-tighter">USER</span>
+                ) : (
+                  <img src="/Logo.png" alt="AI" className="w-full h-full object-cover" />
+                )}
               </div>
               <div className={`space-y-1.5 ${m.role === "user" ? "items-end text-right" : "items-start"}`}>
                 <div className={`p-4 md:p-5 text-sm leading-relaxed whitespace-pre-wrap transition-all
@@ -208,7 +212,7 @@ export function ChatInterface() {
         </form>
         <div className="mt-3 flex justify-between items-center px-1">
           <p className="text-[9px] text-muted-foreground/70 flex items-center gap-1">
-            <Info size={10} /> LexAI Assistant may produce errors. Verify legal facts.
+            <Info size={10} /> ApnaNyaya Assistant may produce errors. Verify legal facts.
           </p>
           <p className="text-[9px] text-primary/40 font-serif italic">§ Justice for all</p>
         </div>

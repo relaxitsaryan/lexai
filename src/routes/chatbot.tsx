@@ -7,9 +7,9 @@ import { Scale, ShieldCheck, Languages } from "lucide-react";
 export const Route = createFileRoute("/chatbot")({
   head: () => ({
     meta: [
-      { title: "Legal Assistant — LexAI" },
+      { title: "Legal Assistant — ApnaNyaya" },
       { name: "description", content: "Speak or type in Hindi, English, Hinglish. Justice should not require fluency. Get instant legal aid from our multilingual assistant." },
-      { property: "og:title", content: "Legal Assistant — LexAI" },
+      { property: "og:title", content: "Legal Assistant — ApnaNyaya" },
       { property: "og:description", content: "Multilingual Voice & Chatbot for Legal Aid." },
     ],
   }),

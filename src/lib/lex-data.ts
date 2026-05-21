@@ -43,7 +43,7 @@ export const FEATURES = [
       "RTI applications, FIR drafts, cybercrime complaints",
       "NDAs, rental agreements, offer letters, affidavits",
     ],
-    example: "Lawyers charge ₹2,000–10,000 per document. LexAI does it for ₹49–499.",
+    example: "Lawyers charge ₹2,000–10,000 per document. ApnaNyaya does it for ₹49–499.",
   },
   {
     n: "04",
@@ -86,7 +86,7 @@ export const FEATURES = [
     bullets: [
       "Specialisation, location and language filters",
       "Fixed-fee consultations from ₹299",
-      "LexAI handles the brief so the lawyer is ready",
+      "ApnaNyaya handles the brief so the lawyer is ready",
     ],
   },
   {

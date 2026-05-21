@@ -233,7 +233,7 @@ const MOCK_ANSWERS: Record<string, AnalysisData> = {
       }
     ],
     suggestedActions: [
-      "Send a legal notice draft drafted by LexAI demanding the refund of the security deposit within 15 days, enclosing photos of the empty flat.",
+      "Send a legal notice draft drafted by ApnaNyaya demanding the refund of the security deposit within 15 days, enclosing photos of the empty flat.",
       "If unresponsive, file a petition before the Rent Authority or Rent Court established under your state's Rent Control Act.",
       "Use local mediation or tenant-landlord arbitration forums if available in your city for speedier recovery."
     ],
@@ -449,10 +449,10 @@ export function SituationAnalyzer() {
           {/* Logo */}
           <div className="p-6 pb-4 flex items-center gap-3">
             <div className="w-8 h-8 rounded bg-[#BFA37C] flex items-center justify-center text-[#111625] font-serif font-bold text-lg shadow-inner">
-              L
+              A
             </div>
             <div>
-              <span className="font-serif text-xl font-semibold tracking-wide text-white">LexAI</span>
+              <span className="font-serif text-xl font-semibold tracking-wide text-white">ApnaNyaya</span>
               <span className="text-[10px] block tracking-[0.2em] text-[#BFA37C] font-semibold -mt-1">
                 LEGAL WORKSPACE
               </span>
@@ -725,10 +725,10 @@ export function SituationAnalyzer() {
                           <div className="bg-[#FBF9F6] border-t border-[#1E2638]/5 px-6 py-4 flex items-center justify-between gap-4">
                             <p className="text-[10px] text-[#1E2638]/50 flex items-center gap-1.5">
                               <Info size={12} className="shrink-0" />
-                              <span>LexAI is an informational assistant. This analysis does not constitute formal legal representation.</span>
+                              <span>ApnaNyaya is an informational assistant. This analysis does not constitute formal legal representation.</span>
                             </p>
                             <span className="text-[9px] uppercase tracking-widest text-[#BFA37C] font-mono font-bold whitespace-nowrap">
-                              § LexAI
+                              § ApnaNyaya
                             </span>
                           </div>
                         </div>

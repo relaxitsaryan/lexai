@@ -6,10 +6,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
         <div className="col-span-2">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 border border-primary flex items-center justify-center">
-              <span className="font-serif text-primary text-lg leading-none">L</span>
-            </div>
-            <span className="font-serif text-xl text-primary">LexAI</span>
+            <img src="/Logo.png" alt="ApnaNyaya Logo" className="h-8 w-auto" />
+            <span className="font-serif text-xl text-primary">ApnaNyaya</span>
           </div>
           <p className="mt-4 text-sm text-muted-foreground max-w-xs leading-relaxed">
             Legal intelligence for every Indian. Know your rights, generate documents, and act — in minutes, in your language.
@@ -36,8 +34,8 @@ export function Footer() {
       </div>
       <div className="border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} LexAI. All rights reserved.</p>
-          <p>LexAI provides legal information, not legal advice.</p>
+          <p>© {new Date().getFullYear()} ApnaNyaya. All rights reserved.</p>
+          <p>ApnaNyaya provides legal information, not legal advice.</p>
         </div>
       </div>
     </footer>
