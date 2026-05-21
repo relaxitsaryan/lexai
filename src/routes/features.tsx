@@ -80,7 +80,7 @@ function FeaturesPage() {
         </div>
       </Section>
 
-      <Section className="py-24">
+      <Section className="py-16">
         <Reveal>
           <div className="border border-border p-10 md:p-16 flex flex-col md:flex-row gap-8 md:items-end justify-between">
             <div>

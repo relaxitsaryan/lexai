@@ -74,7 +74,7 @@ function PricingPage() {
         </div>
       </Section>
 
-      <Section className="py-24">
+      <Section className="py-16">
         <div className="grid lg:grid-cols-12 gap-10">
           <div className="lg:col-span-5">
             <Reveal>
@@ -103,7 +103,7 @@ function PricingPage() {
         </div>
       </Section>
 
-      <Section className="py-24">
+      <Section className="py-16">
         <Reveal>
           <Eyebrow>B2B & Enterprise</Eyebrow>
           <h2 className="mt-6 font-serif text-4xl text-primary leading-tight max-w-3xl">
@@ -121,7 +121,7 @@ function PricingPage() {
         </div>
       </Section>
 
-      <Section className="py-24">
+      <Section className="py-16">
         <Reveal>
           <div className="border border-border bg-secondary/30 p-10 md:p-14 flex flex-col md:flex-row gap-8 md:items-center justify-between">
             <div>

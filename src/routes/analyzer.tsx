@@ -1,11 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { analyzeLegalSituation, getLegalRights, generateLegalDraft, getDetailedExplanation } from "@/lib/groq";
-import { Scale, ShieldCheck, Clock, AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Gavel, LayoutDashboard, FileText, Search, Mic2, Settings, Globe, Info, Zap, X, Copy } from "lucide-react";
+import { Scale, ShieldCheck, Clock, AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Gavel, LayoutDashboard, FileText, Search, Mic2, Settings, Globe, Info, Zap, X, Copy, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ActionRoadmap } from "@/components/analyzer/ActionRoadmap";
+import { useAuth } from "@/context/AuthContext";
+import { logActivity, getActivityById } from "@/lib/activity";
 
 export const Route = createFileRoute("/analyzer")({
+  validateSearch: (search: Record<string, unknown>): { caseId?: string } => {
+    return {
+      caseId: (search.caseId as string) || undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: "Situation Analyzer — ApnaNyaya" },
@@ -110,8 +117,11 @@ const STAGES = [
 ];
 
 function AnalyzerPage() {
+  const { user } = useAuth();
+  const search = useSearch({ from: "/analyzer" }) as any;
   const [situation, setSituation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
   const [stage, setStage] = useState(0);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -122,6 +132,30 @@ function AnalyzerPage() {
   const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
   const [isExplaining, setIsExplaining] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Restore past analysis if caseId is present
+  useEffect(() => {
+    if (search.caseId) {
+      const restoreCase = async () => {
+        setIsRestoring(true);
+        try {
+          const activity = await getActivityById(search.caseId);
+          if (activity && activity.metadata) {
+            setSituation(activity.metadata.situation || activity.description);
+            setResult(activity.metadata.result);
+            if (activity.metadata.view) setActiveView(activity.metadata.view);
+          } else {
+            setError("Could not find this case.");
+          }
+        } catch (e) {
+          setError("Failed to restore case memory.");
+        } finally {
+          setIsRestoring(false);
+        }
+      };
+      restoreCase();
+    }
+  }, [search.caseId]);
 
   useEffect(() => {
     if (result && resultsRef.current) {
@@ -154,8 +188,20 @@ function AnalyzerPage() {
       setResult(null);
     }
 
+    // Log activity start
+    const isRights = activeView === 'rights' || specificRightsFetch;
+    if (user) {
+      logActivity(
+        user.uid,
+        isRights ? "rights_checked" : "analysis_started",
+        isRights ? "Know Your Rights" : "Situation Analysis",
+        situation.substring(0, 120),
+        { view: activeView }
+      );
+    }
+
     try {
-      const response = (activeView === 'rights' || specificRightsFetch)
+      const response = isRights
         ? await (getLegalRights as any)({ data: [{ role: "user", content: situation }] })
         : await (analyzeLegalSituation as any)({ data: [{ role: "user", content: situation }] });
       
@@ -166,6 +212,23 @@ function AnalyzerPage() {
         setResult((prev: any) => ({ ...prev, ...parsed }));
       } else {
         setResult(parsed);
+      }
+
+      // Log completion
+      if (user && !specificRightsFetch) {
+        logActivity(
+          user.uid,
+          "analysis_completed",
+          parsed.legalDomain || "Legal Analysis",
+          `Risk: ${parsed.riskLevel || "N/A"} — ${situation.substring(0, 80)}`,
+          { 
+            domain: parsed.legalDomain, 
+            risk: parsed.riskLevel,
+            result: parsed,
+            situation: situation,
+            view: activeView 
+          }
+        );
       }
     } catch (e) {
       console.error(e);
@@ -178,6 +241,17 @@ function AnalyzerPage() {
   const handleLearnMore = async () => {
     if (isExplaining || !situation) return;
     setIsExplaining(true);
+
+    if (user) {
+      logActivity(
+        user.uid,
+        "explanation_requested",
+        "Deep-Dive Explanation",
+        situation.substring(0, 120),
+        { view: activeView }
+      );
+    }
+
     try {
       const context = activeView === 'rights' ? "Focus on detailed statutory rights and legal protections." : "Focus on general legal strategy and next steps.";
       const response = await (getDetailedExplanation as any)({ data: { situation, context } });
@@ -200,6 +274,17 @@ function AnalyzerPage() {
       });
       const draft = response.choices[0].message.content;
       setDraftResult(draft);
+
+      // Log draft generation
+      if (user) {
+        logActivity(
+          user.uid,
+          "draft_generated",
+          stepTitle,
+          `Draft: ${actionType} — ${situation.substring(0, 80)}`,
+          { actionType, stepTitle }
+        );
+      }
     } catch (e) {
       console.error(e);
       setError("Failed to generate draft. Please try again.");
@@ -207,6 +292,17 @@ function AnalyzerPage() {
       setIsDrafting(false);
     }
   };
+
+  if (isRestoring) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-[#f5f0e8]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 animate-spin text-accent" />
+          <p className="text-xs uppercase tracking-widest text-[#1a1f2e] font-medium">Restoring Case Memory...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-[#f5f0e8] text-[#1a1f2e] font-sans selection:bg-accent/30 overflow-hidden">

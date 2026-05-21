@@ -39,7 +39,7 @@ function AboutPage() {
         </div>
       </Section>
 
-      <Section className="py-24">
+      <Section className="py-16">
         <Reveal>
           <Eyebrow>Roadmap</Eyebrow>
           <h2 className="mt-6 font-serif text-4xl md:text-5xl text-primary leading-tight max-w-3xl">
@@ -65,7 +65,7 @@ function AboutPage() {
         </div>
       </Section>
 
-      <Section className="py-24">
+      <Section className="py-16">
         <Reveal>
           <Eyebrow>Team</Eyebrow>
           <h2 className="mt-6 font-serif text-4xl md:text-5xl text-primary leading-tight max-w-3xl">

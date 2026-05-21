@@ -39,7 +39,7 @@ function ChatBotFAB() {
       to="/analyzer"
       className="fixed bottom-8 right-8 z-[60] flex items-center flex-row-reverse gap-3 group"
     >
-      <div className="bg-primary p-2 shadow-2xl hover:bg-accent transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
+      <div className="bg-brown p-2 shadow-2xl hover:bg-accent transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
         <img src="/Logo.png" alt="Logo" className="w-10 h-10 object-contain" />
       </div>
       <div className="hidden md:block bg-background border border-border px-4 py-2 text-[10px] uppercase tracking-widest text-primary shadow-xl font-medium opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
@@ -145,13 +145,13 @@ function Marquee() {
     "Specific Relief Act",
     "Contract Act",
   ];
-  
+
   // Duplicate items for seamless loop
   const doubleItems = [...items, ...items];
 
   return (
     <div className="border-y border-border bg-secondary/40 overflow-hidden relative">
-      <motion.div 
+      <motion.div
         className="flex gap-12 py-5 whitespace-nowrap text-xs uppercase tracking-[0.22em] text-primary/70 w-max"
         animate={{
           x: [0, "-50%"],
