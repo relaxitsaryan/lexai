@@ -10,12 +10,12 @@ import tsConfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ command }) => ({
   plugins: [
     tanstackStart({
-      server: { entry: "server" },
+      server: process.env.CLOUDFLARE === "true" ? { entry: "server" } : undefined,
     }),
     viteReact(),
     tailwindcss(),
     tsConfigPaths(),
-    command === "build" ? cloudflare() : null,
+    command === "build" && process.env.CLOUDFLARE === "true" ? cloudflare() : null,
   ],
   optimizeDeps: {
     exclude: [
