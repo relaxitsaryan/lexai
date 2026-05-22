@@ -10,6 +10,10 @@ import {
   doc,
   serverTimestamp,
   Timestamp,
+  getCountFromServer,
+  onSnapshot,
+  setDoc,
+  increment,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -50,6 +54,24 @@ export function getActivityLabel(type: ActivityType): string {
   return TYPE_LABELS[type] || type;
 }
 
+// ─── Stats Tracking ──────────────────────────────────────────────
+async function incrementActivityStat(uid: string, type: ActivityType) {
+  try {
+    const statsRef = doc(db, "users", uid, "dashboard", "stats");
+    const updates: any = {};
+    
+    if (type === "analysis_completed" || type === "analysis_started") updates.totalAnalyses = increment(1);
+    if (type === "draft_generated") updates.totalDrafts = increment(1);
+    if (type === "rights_checked") updates.totalRightsChecks = increment(1);
+
+    if (Object.keys(updates).length > 0) {
+      await setDoc(statsRef, updates, { merge: true });
+    }
+  } catch (error) {
+    console.error("Failed to increment activity stat:", error);
+  }
+}
+
 // ─── Log an activity ─────────────────────────────────────────────
 export async function logActivity(
   uid: string,
@@ -67,6 +89,10 @@ export async function logActivity(
       metadata: metadata || {},
       createdAt: serverTimestamp(),
     });
+    
+    // Background update of stats - don't await to keep UI snappy
+    incrementActivityStat(uid, type);
+    
     return docRef.id;
   } catch (error) {
     console.error("Failed to log activity:", error);
@@ -74,39 +100,66 @@ export async function logActivity(
   }
 }
 
-// ─── Fetch recent activities for a user ──────────────────────────
+// ─── Fetch recent activities (one-time) ──────────────────────────
 export async function getRecentActivities(
   uid: string,
   count: number = 10
 ): Promise<Activity[]> {
+  // Existing implementation for one-time fetch...
+  // (Omitted for brevity, but I'll keep the logic I optimized earlier)
   try {
     const q = query(
       collection(db, "activities"),
       where("uid", "==", uid),
-      limit(50) // Fetch a reasonable amount to sort locally
+      orderBy("createdAt", "desc"),
+      limit(count)
     );
     const snapshot = await getDocs(q);
-    const activities = snapshot.docs.map((doc) => ({
+    return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<Activity, "id">),
     }));
-
-    // Sort in memory to avoid needing a Firestore composite index immediately
-    return activities.sort((a, b) => {
-      const getMs = (ts: any) => {
-        if (!ts) return 0;
-        if (typeof ts.toMillis === 'function') return ts.toMillis();
-        if (ts instanceof Date) return ts.getTime();
-        if (typeof ts === 'number') return ts;
-        if (typeof ts === 'string') return new Date(ts).getTime();
-        return 0;
-      };
-      return getMs(b.createdAt) - getMs(a.createdAt);
-    }).slice(0, count);
-  } catch (error) {
-    console.error("Failed to fetch activities:", error);
+  } catch (error: any) {
+    // Fallback logic preserved...
+    if (error?.code === 'failed-precondition' || error?.message?.includes('index')) {
+      const q = query(collection(db, "activities"), where("uid", "==", uid), limit(Math.max(count, 20)));
+      const snapshot = await getDocs(q);
+      const activities = snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as Omit<Activity, "id">) }));
+      return activities.sort((a: any, b: any) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0)).slice(0, count);
+    }
     return [];
   }
+}
+
+// ─── Real-time subscription ──────────────────────────────────────
+export function subscribeToRecentActivities(
+  uid: string,
+  onUpdate: (activities: Activity[]) => void,
+  count: number = 10
+) {
+  const q = query(
+    collection(db, "activities"),
+    where("uid", "==", uid),
+    orderBy("createdAt", "desc"),
+    limit(count)
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const activities = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Activity, "id">)
+    }));
+    onUpdate(activities);
+  }, (error) => {
+    console.error("Activity subscription error:", error);
+    // Fallback if index fails
+    const fallbackQ = query(collection(db, "activities"), where("uid", "==", uid), limit(20));
+    onSnapshot(fallbackQ, (s) => {
+      const activities = s.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Activity, "id">) }))
+        .sort((a: any, b: any) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+      onUpdate(activities);
+    });
+  });
 }
 
 // ─── Get activity by ID ──────────────────────────────────────────
@@ -130,27 +183,63 @@ export async function getActivityStats(uid: string): Promise<{
   totalRightsChecks: number;
 }> {
   try {
-    const q = query(
-      collection(db, "activities"),
-      where("uid", "==", uid)
-    );
-    const snapshot = await getDocs(q);
+    // Highly optimized: read from cached stats document first
+    const statsSnap = await getDoc(doc(db, "users", uid, "dashboard", "stats"));
+    if (statsSnap.exists()) {
+      const data = statsSnap.data() as any;
+      return {
+        totalAnalyses: data.totalAnalyses || 0,
+        totalDrafts: data.totalDrafts || 0,
+        totalRightsChecks: data.totalRightsChecks || 0,
+      };
+    }
 
-    let totalAnalyses = 0;
-    let totalDrafts = 0;
-    let totalRightsChecks = 0;
+    // Fallback to counting if stats doc doesn't exist yet
+    const baseQuery = query(collection(db, "activities"), where("uid", "==", uid));
+    const [analysesStarted, analysesCompleted, drafts, rights] = await Promise.all([
+      getCountFromServer(query(baseQuery, where("type", "==", "analysis_started"))),
+      getCountFromServer(query(baseQuery, where("type", "==", "analysis_completed"))),
+      getCountFromServer(query(baseQuery, where("type", "==", "draft_generated"))),
+      getCountFromServer(query(baseQuery, where("type", "==", "rights_checked"))),
+    ]);
 
-    snapshot.docs.forEach((doc) => {
-      const data = doc.data();
-      if (data.type === "analysis_completed" || data.type === "analysis_started") totalAnalyses++;
-      if (data.type === "draft_generated") totalDrafts++;
-      if (data.type === "rights_checked") totalRightsChecks++;
-    });
+    const result = {
+      totalAnalyses: analysesStarted.data().count + analysesCompleted.data().count,
+      totalDrafts: drafts.data().count,
+      totalRightsChecks: rights.data().count,
+    };
 
-    return { totalAnalyses, totalDrafts, totalRightsChecks };
+    // Cache this result for next time
+    setDoc(doc(db, "users", uid, "dashboard", "stats"), result, { merge: true }).catch(() => {});
+
+    return result;
   } catch (error) {
-    console.error("Failed to fetch activity stats:", error);
-    return { totalAnalyses: 0, totalDrafts: 0, totalRightsChecks: 0 };
+    // Fallback if composite indices are missing or cached doc fails
+    console.warn("Activity stats query failed, falling back to manual count:", error);
+    try {
+      const q = query(collection(db, "activities"), where("uid", "==", uid), limit(500));
+      const snapshot = await getDocs(q);
+      
+      let totalAnalyses = 0;
+      let totalDrafts = 0;
+      let totalRightsChecks = 0;
+
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        if (data.type === "analysis_completed" || data.type === "analysis_started") totalAnalyses++;
+        if (data.type === "draft_generated") totalDrafts++;
+        if (data.type === "rights_checked") totalRightsChecks++;
+      });
+      
+      const fallbackResult = { totalAnalyses, totalDrafts, totalRightsChecks };
+      // Try to cache the fallback result too
+      setDoc(doc(db, "users", uid, "dashboard", "stats"), fallbackResult, { merge: true }).catch(() => {});
+      
+      return fallbackResult;
+    } catch (innerError) {
+      console.error("Critical failure in activity stats:", innerError);
+      return { totalAnalyses: 0, totalDrafts: 0, totalRightsChecks: 0 };
+    }
   }
 }
 

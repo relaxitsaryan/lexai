@@ -23,6 +23,7 @@ import {
   Info
 } from "lucide-react";
 import { analyzeLegalSituation } from "@/lib/groq";
+import { useAuth } from "@/context/AuthContext";
 
 interface RelevantLaw {
   law: string;
@@ -275,6 +276,7 @@ const MOCK_ANSWERS: Record<string, AnalysisData> = {
 };
 
 export function SituationAnalyzer() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -510,8 +512,8 @@ export function SituationAnalyzer() {
                 <User size={16} />
               </div>
               <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-white truncate">Guest User</p>
-                <p className="text-[10px] text-slate-500 truncate">Adv. Consult Mode</p>
+                <p className="text-xs font-semibold text-white truncate">{user?.displayName || "Guest User"}</p>
+                <p className="text-[10px] text-slate-500 truncate">{user?.email || "Adv. Consult Mode"}</p>
               </div>
             </div>
             <button className="text-slate-500 hover:text-white transition-colors" title="Settings">

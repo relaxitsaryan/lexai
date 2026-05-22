@@ -6,6 +6,7 @@ import { Reveal } from "@/components/site/Reveal";
 import {
   Activity,
   getRecentActivities,
+  subscribeToRecentActivities,
   getActivityStats,
   getActivityLabel,
   timeAgo,
@@ -51,6 +52,7 @@ function DashboardPage() {
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activityLoading, setActivityLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [stats, setStats] = useState({
     totalAnalyses: 0,
     totalDrafts: 0,
@@ -72,25 +74,35 @@ function DashboardPage() {
   useEffect(() => {
     if (!user) return;
     setDisplayName(user.displayName || "");
-
-    const fetchData = async () => {
-      setActivityLoading(true);
-      try {
-        const [recentActivities, activityStats] = await Promise.all([
-          getRecentActivities(user.uid, showAllActivities ? 50 : 5),
-          getActivityStats(user.uid),
-        ]);
-        setActivities(recentActivities);
-        setStats(activityStats);
-      } catch (error) {
-        console.error("Dashboard data fetch error:", error);
-        toast.error("Failed to load some dashboard data");
-      } finally {
+    
+    // Real-time activity subscription
+    const unsubscribeActivities = subscribeToRecentActivities(
+      user.uid,
+      (data) => {
+        setActivities(data);
         setActivityLoading(false);
+      },
+      showAllActivities ? 50 : 5
+    );
+
+    // Stats fetching
+    const fetchStats = async () => {
+      setStatsLoading(true);
+      try {
+        const data = await getActivityStats(user.uid);
+        setStats(data);
+      } catch (error) {
+        console.error("Stats fetch error:", error);
+      } finally {
+        setStatsLoading(false);
       }
     };
 
-    fetchData();
+    fetchStats();
+
+    return () => {
+      unsubscribeActivities();
+    };
   }, [user, showAllActivities]);
 
   // Profile completeness
@@ -178,10 +190,17 @@ function DashboardPage() {
             const Icon = s.icon;
             return (
               <Reveal key={s.label} delay={i * 0.05}>
-                <div className="bg-card border border-border p-5 md:p-6 shadow-sm group hover:border-accent transition-colors">
+                <div className="bg-card border border-border p-5 md:p-6 shadow-sm group hover:border-accent transition-colors relative overflow-hidden">
+                  {statsLoading && (
+                    <div className="absolute inset-0 bg-background/50 backdrop-blur-[1px] flex items-center justify-center z-10">
+                      <Loader2 size={16} className="animate-spin text-accent/50" />
+                    </div>
+                  )}
                   <div className="flex justify-between items-start mb-4">
                     <Icon size={20} className="text-accent" />
-                    <span className="text-2xl md:text-3xl font-serif text-primary">{s.value}</span>
+                    <span className="text-2xl md:text-3xl font-serif text-primary">
+                      {statsLoading ? "—" : s.value}
+                    </span>
                   </div>
                   <p className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">{s.label}</p>
                 </div>

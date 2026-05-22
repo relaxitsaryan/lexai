@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { analyzeLegalSituation, getLegalRights, generateLegalDraft, getDetailedExplanation } from "@/lib/groq";
 import { Scale, ShieldCheck, Clock, AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Gavel, LayoutDashboard, FileText, Search, Mic2, Settings, Globe, Info, Zap, X, Copy, Loader2 } from "lucide-react";
@@ -117,7 +117,8 @@ const STAGES = [
 ];
 
 function AnalyzerPage() {
-  const { user } = useAuth();
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
   const search = useSearch({ from: "/analyzer" }) as any;
   const [situation, setSituation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -228,7 +229,15 @@ function AnalyzerPage() {
             situation: situation,
             view: activeView 
           }
-        );
+        ).then(id => {
+          if (id) {
+            navigate({
+              to: "/analyzer",
+              search: { caseId: id },
+              replace: true,
+            });
+          }
+        });
       }
     } catch (e) {
       console.error(e);
@@ -402,7 +411,7 @@ function AnalyzerPage() {
               <img src="/Logo.png" alt="User" className="w-full h-full object-cover" />
             </div>
             <div className="flex-1">
-              <p className="text-[11px] font-bold leading-none">Aryan Mahtha</p>
+              <p className="text-[11px] font-bold leading-none">{user?.displayName || "Advocate"}</p>
               <p className="text-[9px] text-[#b5892f] font-bold mt-1 uppercase tracking-wider">Advocate Elite</p>
             </div>
           </div>
